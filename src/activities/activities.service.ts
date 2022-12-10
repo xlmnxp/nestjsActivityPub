@@ -5,10 +5,10 @@ import { UpdateActivityDto } from './dto/update-activity.dto';
 
 @Injectable()
 export class ActivitiesService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly ds: DatabaseService) {}
   
   async create(createActivityDto: CreateActivityDto) {
-    let activity = await this.databaseService.knex("activities").insert({
+    let activity = await this.ds.knex("activities").insert({
       actor: createActivityDto.actor,
       type: createActivityDto.type,
       payload: createActivityDto
@@ -17,45 +17,47 @@ export class ActivitiesService {
   }
 
   async findAll(type: string) {
-    let activities: any[] = await this.databaseService.knex("activities").select([
+    let activities: any[] = await this.ds.knex("activities").select([
       "id",
       "name",
       "type",
       "payload",
-      this.databaseService.knex.raw(`json_build_object('type', 'Person', 'name', person.name) as actor`)
-    ]).join("person", "activities.actor", "person.id");
+      this.ds.knex.raw(`json_build_object('type', 'User', 'name', user.name) as actor`)
+    ]).join("users", "activities.actor", "user.id");
     return activities.map(activity => ({
       "@context": "https://www.w3.org/ns/activitystreams",
+      id: `https://ap.sy.sa/${activity.type}/${activity.aid}`,
       ...activity.payload,
       ...activity,
       payload: undefined
     }));
   }
 
-  async findAllForPerson(id: string) {
-    let activities: any[] = await this.databaseService.knex("activities").select([
+  async findAllForUser(id: string) {
+    let activities: any[] = await this.ds.knex("activities").select([
       "id",
       "name",
       "type",
       "payload",
-      this.databaseService.knex.raw(`json_build_object('type', 'Person', 'name', person.name) as actor`)
-    ]).join("person", "activities.actor", "person.id").where("actor", id);
+      this.ds.knex.raw(`json_build_object('type', 'User', 'name', user.name) as actor`)
+    ]).join("users", "activities.actor", "user.id").where("actor", id);
     return activities.map(activity => ({
       "@context": "https://www.w3.org/ns/activitystreams",
+      id: `https://ap.sy.sa/${activity.type}/${activity.aid}`,
       ...activity.payload,
       ...activity,
       payload: undefined
     }));
   }
 
-  async findAllForPersonInTo(id: string) {
-    let activities: any[] = await this.databaseService.knex("activities").select([
+  async findAllForUserInTo(id: string) {
+    let activities: any[] = await this.ds.knex("activities").select([
       "id",
       "name",
       "type",
       "payload",
-      this.databaseService.knex.raw(`json_build_object('type', 'Person', 'name', person.name) as actor`)
-    ]).join("person", "activities.actor", "person.id").where(this.databaseService.knex.raw("payload::jsonb->'to'"), '?', id);
+      this.ds.knex.raw(`json_build_object('type', 'User', 'name', user.name) as actor`)
+    ]).join("user", "activities.actor", "user.id").where(this.ds.knex.raw("payload::jsonb->'to'"), '?', id);
     return activities.map(activity => ({
       "@context": "https://www.w3.org/ns/activitystreams",
       ...activity.payload,
@@ -65,13 +67,13 @@ export class ActivitiesService {
   }
 
   async findOne(type: string, id: string) {
-    let activity: any = await this.databaseService.knex("activities").select([
+    let activity: any = await this.ds.knex("activities").select([
       "id",
       "name",
       "type",
       "payload",
-      this.databaseService.knex.raw(`json_build_object('type', 'Person', 'name', person.name) as actor`)
-    ]).join("person", "activities.actor", "person.id").where("aid", id).first();
+      this.ds.knex.raw(`json_build_object('type', 'User', 'name', user.name) as actor`)
+    ]).join("user", "activities.actor", "user.id").where("aid", id).first();
 
     return {
       "@context": "https://www.w3.org/ns/activitystreams",

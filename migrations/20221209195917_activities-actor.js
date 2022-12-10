@@ -14,5 +14,5 @@
  * @returns { Promise<void> }
  */
 exports.down = function (knex) {
-
+    return null;
 };

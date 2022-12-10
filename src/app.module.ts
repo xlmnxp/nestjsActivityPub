@@ -2,12 +2,20 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
-import { PersonsModule } from './persons/persons.module';
+import { UsersModule } from './users/users.module';
 import { ActivitiesModule } from './activities/activities.module';
+import { AuthenticationModule } from './authentication/authentication.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [DatabaseModule, ActivitiesModule, PersonsModule],
+  imports: [
+    ConfigModule.forRoot(),
+    DatabaseModule,
+    ActivitiesModule,
+    UsersModule,
+    AuthenticationModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

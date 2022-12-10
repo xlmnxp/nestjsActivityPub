@@ -3,10 +3,10 @@ import { DatabaseService } from './database/database.service';
 
 @Injectable()
 export class AppService {
-  constructor(private databaseService: DatabaseService) {}
+  constructor(private ds: DatabaseService) {}
   
   async getHello() {
-    let data = await this.databaseService.knex.from("db_migrations").select("*");
+    let data = await this.ds.knex.from("db_migrations").select("*");
     return data;
   }
 }

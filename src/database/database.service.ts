@@ -3,20 +3,20 @@ import knex from 'knex';
 
 @Injectable()
 export class DatabaseService {
-    public knex = knex({
-        client: 'postgresql',
-        connection: {
-          host: '2a06:a005:857:dc01:e432:d88e:e5d8:4e2c',
-          database: 'activitypub',
-          user:     'activitypub',
-          password: 'secure'
-        },
-        pool: {
-          min: 2,
-          max: 10
-        },
-        migrations: {
-          tableName: 'db_migrations'
-        }
-      })
+  public knex = knex({
+    client: process.env.DB_CLIENT,
+    connection: {
+      host: process.env.DB_HOST,
+      database: process.env.DB_NAME,
+      user: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD
+    },
+    pool: {
+      min: 2,
+      max: 10
+    },
+    migrations: {
+      tableName: 'db_migrations'
+    }
+  })
 }

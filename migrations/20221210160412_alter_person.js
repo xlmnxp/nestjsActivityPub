@@ -3,7 +3,7 @@
  * @returns { Promise<void> }
  */
 exports.up = function(knex) {
-  return knex.schema.renameTable("actvities", "activities")
+    return knex.schema.renameTable("person", "users");
 };
 
 /**
